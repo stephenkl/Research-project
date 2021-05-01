@@ -1,0 +1,58 @@
+# i3d_resnet50_v1_custom
+
+DDP_CONFIG:
+  WORLD_SIZE: 1
+  WORLD_RANK: 0
+  GPU_WORLD_SIZE: 1
+  GPU_WORLD_RANK: 0
+  DIST_URL: 'tcp://192.168.0.108:23456'
+  WOLRD_URLS: [ '192.168.0.108' ]
+  AUTO_RANK_MATCH: True
+  DIST_BACKEND: 'nccl'
+  GPU: 0
+  DISTRIBUTED: False
+
+CONFIG:
+  TRAIN:
+    EPOCH_NUM: 100
+    BATCH_SIZE: 8
+    LR: 0.01
+    MOMENTUM: 0.9
+    W_DECAY: 1e-5
+    LR_POLICY: 'Step'
+    USE_WARMUP: False
+    LR_MILESTONE: [40, 80]
+    STEP: 0.1
+
+  VAL:
+    FREQ: 2
+    BATCH_SIZE: 8
+
+  DATA:
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset/train.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/new_test/val.txt'
+    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/new_test/'
+    NUM_CLASSES: 3
+    CLIP_LEN: 32
+    FRAME_RATE: 3
+    NUM_SEGMENT: 1
+    NUM_CROP: 1
+    TEST_NUM_SEGMENT: 10
+    TEST_NUM_CROP: 3
+    MULTIGRID: False
+    KEEP_ASPECT_RATIO: False
+
+  MODEL:
+    NAME: 'i3d_resnet50_v1_custom'
+    PRETRAINED: True    # Default True, use a backbone pretrained on K400. If set to False, the model is just inflated from 2D ImageNet weights.
+    LOAD : True
+    PRETRAINED_PATH : '/home/yi/Desktop/AFL/weights/0322.pth'
+    
+
+  LOG:
+    BASE_PATH: './logs/i3d_resnet50_v1_custom/test'
+    LOG_DIR: 'tb_log'
+    SAVE_DIR: 'checkpoints'
+    EVAL_DIR: './logs/i3d_resnet50_v1_custom/eval'
+    SAVE_FREQ: 2
