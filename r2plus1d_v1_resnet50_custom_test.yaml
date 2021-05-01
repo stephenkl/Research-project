@@ -1,0 +1,62 @@
+# r2plus1d_v1_resnet50_custom
+
+DDP_CONFIG:
+  WORLD_SIZE: 1
+  WORLD_RANK: 0
+  GPU_WORLD_SIZE: 1
+  GPU_WORLD_RANK: 0
+  DIST_URL: 'tcp://192.168.0.108:23456'
+  WOLRD_URLS: ['192.168.0.108']
+  AUTO_RANK_MATCH: True
+  DIST_BACKEND: 'nccl'
+  GPU: 0
+  DISTRIBUTED: False
+
+CONFIG:
+  TRAIN:
+    EPOCH_NUM: 30
+    BATCH_SIZE: 4
+    LR: 0.001
+    MOMENTUM: 0.9
+    W_DECAY: 1e-5
+    USE_WARMUP: False
+    WARMUP_EPOCHS: 34
+    LR_POLICY: 'Cosine'
+    WARMUP_END_LR: 0.1
+    RESUME_EPOCH: -1
+
+  VAL:
+    FREQ: 2
+    BATCH_SIZE: 4
+
+  DATA:
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset/new_train.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/new_test/val.txt'
+    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/new_test/'
+    NUM_CLASSES: 3
+    CLIP_LEN: 16
+    FRAME_RATE: 6
+    NUM_SEGMENT: 1
+    NUM_CROP: 1
+    TEST_NUM_SEGMENT: 10
+    TEST_NUM_CROP: 3
+    MULTIGRID: False
+    KEEP_ASPECT_RATIO: False
+    CROP_SIZE: 112
+    SHORT_SIDE_SIZE: 128
+    NEW_HEIGHT: 128
+    NEW_WIDTH: 171
+
+  MODEL:
+    NAME: 'r2plus1d_v1_resnet50_custom'
+    PRETRAINED: True
+    LOAD: True
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/r2plus1d_0425.pth'
+
+  LOG:
+    BASE_PATH: './logs/r2plus1d_v1_resnet50_custom'
+    LOG_DIR: 'tb_log'
+    SAVE_DIR: 'checkpoints'
+    EVAL_DIR: './logs/r2plus1d_v1_resnet50_custom/eval'
+    SAVE_FREQ: 10
