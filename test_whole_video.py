@@ -64,8 +64,8 @@ def classify_video(model, fname, sample_list, sample_rate_scale=1):
             buffer = buffer.cuda()
             pred = model(torch.unsqueeze(buffer, dim=0))
             pred = pred.detach().cpu().numpy()
-            #print(pred)
-            #print(np.argmax(pred))
+            print(pred)
+            print(np.argmax(pred))
             pred_list.append(np.argmax(pred))
 
     return pred_list
@@ -91,6 +91,12 @@ def main_worker(cfg):
         pred = classify_video(model, args.video_path, sample_list, sample_rate_scale=args.sample_rate)
         print('predicted class:')
         print(pred)
+        result_file = open('result.txt', 'w')
+        for sample, p in zip(sample_list, pred):
+            start, finish = sample
+            line = str(start) + ' ' + str(finish) + ' ' + str(p) + '\n'
+            result_file.write(line)
+        result_file.close()
 
 
 if __name__ == '__main__':

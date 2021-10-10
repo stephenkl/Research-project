@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.distributed as dist
 import torch.optim
 from tensorboardX import SummaryWriter
+from sklearn.metrics import classification_report
 
 from gluoncv.torch.model_zoo import get_model
 from gluoncv.torch.utils.model_utils import deploy_model, load_model
@@ -69,7 +70,9 @@ def merge(eval_path, cfg):
     pred = [x[0] for x in ans]
     label = [x[3] for x in ans]
     print(np.mean(top1), np.mean(top5), pred, label)
-
+    print('Pred: ', pred)
+    print('Label:', label)
+    print(classification_report(label, pred))#, target_names=['kick', 'contested mark', 'mark', 'pass', 'non']
 
 def main_worker(cfg):
     # create tensorboard and logs
