@@ -1,5 +1,7 @@
 """Customized dataloader for general video classification tasks."""
+import math
 import os
+import random
 import warnings
 import numpy as np
 from decord import VideoReader, cpu
@@ -212,22 +214,29 @@ class VideoClsDataset(Dataset):
         all_index = []
         for i in range(self.num_segment):
             if seg_len <= converted_len:
-                index = list(range(1, seg_len))[::self.frame_sample_rate]
+                interval = math.ceil(seg_len/self.clip_len)
+                index = list(range(seg_len))[::interval]
+                #index = list(range(1, seg_len))[::self.frame_sample_rate]
                 diff = self.clip_len - len(index)
                 if diff > 0:
-                    temp = int(seg_len / 2)
-                    for j in range(diff):
-
-                        while (temp in index):
-                            temp += 1
-                        index.append(temp)
-                        if temp >= seg_len:
-                            temp = 0
+                    set_all = set(list(range(seg_len)))
+                    set_index = set(index)
+                    add_list = list(set_all - set_index)
+                    index.extend(random.sample(add_list, diff))
+                #     temp = int(seg_len / 2)
+                #     for j in range(diff):
+                #
+                #         while (temp in index):
+                #             temp += 1
+                #         index.append(temp)
+                #         if temp >= seg_len:
+                #             temp = 0
                 index.sort()
-                '''if len(index) == self.clip_len:
-                    print('success')
-                else:
-                    print('no')'''
+
+                # '''if len(index) == self.clip_len:
+                #     print('success')
+                # else:
+                #     print('no')'''
 
                 # index = np.linspace(0, seg_len, num=seg_len // self.frame_sample_rate)
                 # index = np.concatenate((index, np.ones(self.clip_len - seg_len // self.frame_sample_rate) * seg_len))
@@ -253,10 +262,10 @@ class VideoClsDataset(Dataset):
                             index.remove(back)
                             start_front = True
                 index.sort()
-                '''if len(index) == self.clip_len:
-                    print('success')
-                else:
-                    print('no')'''
+                # '''if len(index) == self.clip_len:
+                #     print('success')
+                # else:
+                #     print('no')'''
 
                 # end_idx = np.random.randint(converted_len, seg_len)
                 # str_idx = end_idx - converted_len
@@ -267,9 +276,10 @@ class VideoClsDataset(Dataset):
             all_index.extend(list(index))
 
         all_index = all_index[::int(sample_rate_scale)]
+
         vr.seek(0)
         if all_index[-1] >= seg_len:
-            print(all_index)
+            # print(all_index)
             # print('error')
             t = 0
             while (t in all_index):
@@ -279,11 +289,11 @@ class VideoClsDataset(Dataset):
                     break
             all_index[-1] = t
             all_index.sort()
-            print(all_index)
-            print(fname)
-            print(len(all_index))
-            print(seg_len)
-
+            # print(all_index)
+            # print(fname)
+            # print(len(all_index))
+            # print(seg_len)
+        print(all_index)
         buffer = vr.get_batch(all_index).asnumpy()
         return buffer
 
