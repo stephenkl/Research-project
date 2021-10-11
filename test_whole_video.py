@@ -177,15 +177,6 @@ def merge_class(sample_list, pred, pred_prob):
     return merged_dict
     
 
-def merge_class(sample_list. pred):
-    # (0,32), (16,48)
-    #  1 .    1 .     
-    # {(0,48):1, (96,128):2}
-    merge_dict = {}
-    if len(sample_list) == 1:
-        return {sample_list[0]:pred}
-    
-    
     
 
 
