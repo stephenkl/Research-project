@@ -293,7 +293,7 @@ class VideoClsDataset(Dataset):
             # print(fname)
             # print(len(all_index))
             # print(seg_len)
-        print(all_index)
+        # print(all_index)
         buffer = vr.get_batch(all_index).asnumpy()
         return buffer
 

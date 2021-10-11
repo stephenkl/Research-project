@@ -1118,8 +1118,11 @@ def tpn_resnet50_f32s2_custom(cfg):
             # retain only backbone up to before the classification layer
             if k.startswith('fc'):
                 del state_dict[k]
+            elif k.startswith('TPN_neck.aux_head.fc'):
+                del state_dict[k]
 
         msg = model.load_state_dict(state_dict, strict=False)
-        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias'}
+        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias',
+                                         'TPN_neck.aux_head.fc.weight', 'TPN_neck.aux_head.fc.bias'}
         print("=> initialized from a SlowFast4x16 model pretrained on Kinetcis400 dataset")
     return model
