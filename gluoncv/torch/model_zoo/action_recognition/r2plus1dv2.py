@@ -9,7 +9,8 @@ import torch
 import torch.nn as nn
 
 
-__all__ = ['ResNet_R2plus1Dv2', 'r2plus1d_v2_resnet152_kinetics400']
+__all__ = ['ResNet_R2plus1Dv2', 'r2plus1d_v2_resnet152_kinetics400',
+           'r2plus1d_v2_resnet152_custom']
 
 
 eps = 1e-3
@@ -254,4 +255,28 @@ def r2plus1d_v2_resnet152_kinetics400(cfg):
         from ..model_store import get_model_file
         model.load_state_dict(torch.load(get_model_file('r2plus1d_v2_resnet152_kinetics400',
                                                         tag=cfg.CONFIG.MODEL.PRETRAINED)))
+    return model
+
+
+def r2plus1d_v2_resnet152_custom(cfg):
+    model = ResNet_R2plus1Dv2(Bottleneck_R2plus1Dv2,
+                              num_classes=cfg.CONFIG.DATA.NUM_CLASSES,
+                              block_nums=[3, 8, 36, 3],
+                              feat_ext=cfg.CONFIG.INFERENCE.FEAT,
+                              use_affine=cfg.CONFIG.MODEL.USE_AFFINE)
+
+    if cfg.CONFIG.MODEL.PRETRAINED:
+        # from ..model_store import get_model_file
+        # model.load_state_dict(torch.load(get_model_file('r2plus1d_v2_resnet152_kinetics400',
+        #                                                 tag=cfg.CONFIG.MODEL.PRETRAINED)))
+        from ..model_store import get_model_file
+        state_dict = torch.load(get_model_file('r2plus1d_v2_resnet152_kinetics400', tag=cfg.CONFIG.MODEL.PRETRAINED))
+        for k in list(state_dict.keys()):
+            # retain only backbone up to before the classification layer
+            if k.startswith('fc'):
+                del state_dict[k]
+
+        msg = model.load_state_dict(state_dict, strict=False)
+        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias'}
+        print("=> initialized from a R2+1D model pretrained on Kinetcis400 dataset")
     return model

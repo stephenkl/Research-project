@@ -57,4 +57,4 @@ CONFIG:
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
     EVAL_DIR: './logs/r2plus1d_v1_resnet50_custom/eval'
-    SAVE_FREQ: 5
+    SAVE_FREQ: 50

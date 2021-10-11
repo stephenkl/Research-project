@@ -15,7 +15,7 @@ import torch.nn.functional as F
 __all__ = ['TPN', 'TPNet', 'tpn_resnet50_f8s8_kinetics400', 'tpn_resnet50_f16s4_kinetics400',
            'tpn_resnet50_f32s2_kinetics400', 'tpn_resnet101_f8s8_kinetics400',
            'tpn_resnet101_f16s4_kinetics400', 'tpn_resnet101_f32s2_kinetics400',
-           'tpn_resnet50_f32s2_custom']
+           'tpn_resnet50_f32s2_custom', 'tpn_resnet101_f16s4_custom']
 
 
 def rgetattr(obj, attr, *args):
@@ -1124,5 +1124,67 @@ def tpn_resnet50_f32s2_custom(cfg):
         msg = model.load_state_dict(state_dict, strict=False)
         assert set(msg.missing_keys) == {'fc.weight', 'fc.bias',
                                          'TPN_neck.aux_head.fc.weight', 'TPN_neck.aux_head.fc.bias'}
-        print("=> initialized from a SlowFast4x16 model pretrained on Kinetcis400 dataset")
+        print("=> initialized from a TPN model pretrained on Kinetcis400 dataset")
+    return model
+
+
+def tpn_resnet101_f16s4_custom(cfg):
+    neck = TPN(in_channels=[1024, 2048],
+               out_channels=1024,
+               spatial_modulation_config=dict(
+                   inplanes=[1024, 2048],
+                   planes=2048, ),
+               temporal_modulation_config=dict(
+                   scales=(8, 16),
+                   param=dict(
+                       inplanes=-1,
+                       planes=-1,
+                       downsample_scale=-1,
+                   )),
+               upsampling_config=dict(
+                   scale=(1, 1, 1),
+               ),
+               downsampling_config=dict(
+                   scales=(2, 1, 1),
+                   param=dict(
+                       inplanes=-1,
+                       planes=-1,
+                       downsample_scale=-1,
+                   )),
+               level_fusion_config=dict(
+                   in_channels=[1024, 1024],
+                   mid_channels=[1024, 1024],
+                   out_channels=2048,
+                   ds_scales=[(2, 1, 1), (1, 1, 1)],
+               ),
+               aux_head_config=dict(
+                   inplanes=-1,
+                   planes=cfg.CONFIG.DATA.NUM_CLASSES,
+                   loss_weight=0.5
+               ))
+
+    model = TPNet(depth=101,
+                  TPN_neck=neck,
+                  num_classes=cfg.CONFIG.DATA.NUM_CLASSES,
+                  pretrained=cfg.CONFIG.MODEL.PRETRAINED,
+                  pretrained_base=cfg.CONFIG.MODEL.PRETRAINED_BASE,
+                  feat_ext=cfg.CONFIG.INFERENCE.FEAT,
+                  bn_eval=cfg.CONFIG.MODEL.BN_EVAL,
+                  partial_bn=cfg.CONFIG.MODEL.PARTIAL_BN,
+                  bn_frozen=cfg.CONFIG.MODEL.BN_FROZEN)
+
+    if cfg.CONFIG.MODEL.PRETRAINED:
+        from ..model_store import get_model_file
+        state_dict = torch.load(get_model_file('tpn_resnet101_f16s4_kinetics400', tag=cfg.CONFIG.MODEL.PRETRAINED))
+        for k in list(state_dict.keys()):
+            # retain only backbone up to before the classification layer
+            if k.startswith('fc'):
+                del state_dict[k]
+            elif k.startswith('TPN_neck.aux_head.fc'):
+                del state_dict[k]
+
+        msg = model.load_state_dict(state_dict, strict=False)
+        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias',
+                                         'TPN_neck.aux_head.fc.weight', 'TPN_neck.aux_head.fc.bias'}
+        print("=> initialized from a TPN model pretrained on Kinetcis400 dataset")
     return model
