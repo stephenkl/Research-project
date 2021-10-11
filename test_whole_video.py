@@ -31,9 +31,9 @@ def split_video(fname, clip_len=32, interval=16):
     start_index = 0
     end_index = len(vr) - clip_len
     while start_index < end_index:
-        sample_list.append((start_index, start_index+clip_len))
+        sample_list.append((start_index, start_index + clip_len))
         start_index += interval
-    sample_list.append((len(vr)-clip_len, len(vr)))
+    sample_list.append((len(vr) - clip_len, len(vr)))
     print(sample_list)
     return sample_list
 
@@ -53,22 +53,132 @@ def classify_video(model, fname, sample_list, sample_rate_scale=1):
     vr = VideoReader(fname, num_threads=1, ctx=cpu(0))
     print('video load success')
     pred_list = []
+    pred_prob = []
     for sample in sample_list:
         all_index = [x for x in range(sample[0], sample[1], sample_rate_scale)]
-        #vr.seek(0)
+        # vr.seek(0)
         buffer = vr.get_batch(all_index).asnumpy()
         buffer = data_resize(buffer)
-        #buffer = np.stack(buffer, 0)
+        # buffer = np.stack(buffer, 0)
         buffer = data_transform(buffer)
         with torch.no_grad():
             buffer = buffer.cuda()
             pred = model(torch.unsqueeze(buffer, dim=0))
             pred = pred.detach().cpu().numpy()
-            print(pred)
-            print(np.argmax(pred))
+            pred_prob.append(pred[0])
+            # print(pred)
+            # print(np.argmax(pred))
             pred_list.append(np.argmax(pred))
 
-    return pred_list
+    return pred_list, pred_prob
+
+
+def merge_class(sample_list, pred, pred_prob):
+    # sample_list: [(0,32), (16,48), ... ]
+    # pred:        [1 .   , 1 .   , ...  ]
+    # pred_prob.   [[0.12,0.13,...], [0.13, 0.14, ....], ...]
+    # {(0,48):1, (96,128):2}
+    merge_dict = {}
+
+    # define the focus/priority class
+    priority_class = [2, 3]
+
+    # if there is only one interval
+    if len(sample_list) == 1:
+        return {sample_list[0]: pred[0]}
+
+    # if there is two intervals
+    if len(sample_list) == 2:
+        if pred[0] == pred[1]:
+            return {(sample_list[0][0], sample_list[1][1]): pred[0]}
+        else:
+            # compare the probability of two class
+            # if the first interval's class prob is higher
+            if pred_prob[0][pred[0]] > pred_prob[1][pred[1]]:
+                return {(sample_list[0][0], sample_list[1][1]): pred[0]}
+            # else
+            return {(sample_list[0][0], sample_list[1][1]): pred[1]}
+
+    # if there is three intervals:
+    start_frame = 0
+    end_frame = sample_list[0][1]
+    new_interval_lst = []
+    new_pred_lst = []
+    for idx in range(0, len(sample_list) - 2):
+        interv_class_1 = pred[idx]
+        interv_class_2 = pred[idx + 1]
+        interv_class_3 = pred[idx + 2]
+
+        # if two of three intervals has same prediction, use that major class
+        if interv_class_1 == interv_class_2 or interv_class_1 == interv_class_3:
+            final_pred = interv_class_1
+        elif interv_class_2 == interv_class_3:
+            final_pred = interv_class_2
+        # if three intervals has three different classes
+        else:
+            ########## version 1 ##########
+            # use the one with highest probability in three intervals
+            # print(idx, ' with class: ', pred_prob[idx], 'with prob', pred_prob[idx][pred[idx]])
+            # print(idx+1, ' with class: ', pred_prob[idx+1], 'with prob', pred_prob[idx+1][pred[idx+1]])
+            # print(idx+2, ' with class: ', pred_prob[idx+2], 'with prob', pred_prob[idx+2][pred[idx+2]])
+            # first interval is the highest prob interval
+            if pred_prob[idx][pred[idx]] >= pred_prob[idx + 1][pred[idx + 1]] and pred_prob[idx][pred[idx]] >= \
+                    pred_prob[idx + 2][pred[idx + 2]]:
+                final_pred = interv_class_1
+
+            # second interval is the highest prob interval
+            elif pred_prob[idx + 1][pred[idx + 1]] >= pred_prob[idx][pred[idx]] and pred_prob[idx + 1][pred[idx + 1]] >= \
+                    pred_prob[idx + 2][pred[idx + 2]]:
+                final_pred = interv_class_2
+
+            # third interval is the highest prob interval
+            else:
+                final_pred = interv_class_3
+
+        # print("-----start frame: ", start_frame, "    end frame: ", end_frame)
+        # print("Selection from pred_lst: [ ", interv_class_1, ", ", interv_class_2, ", ", interv_class_3, "]")
+        # print("Final selection:  ", final_pred)
+
+        new_interval_lst.append((start_frame, end_frame))
+        new_pred_lst.append(final_pred)
+        start_frame = end_frame + 1
+        end_frame = sample_list[idx + 1][1]
+
+        if idx == len(sample_list) - 3:
+            new_interval_lst.append((start_frame, sample_list[-1][1]))
+            new_pred_lst.append(final_pred)
+
+    #         print("-----start frame: ", start_frame, "    end frame: ", sample_list[-1][1])
+    #         print("Selection from pred_lst: [ ", interv_class_1, ", ", interv_class_2, ", ", interv_class_3, "]")
+    #         print("Final selection:  ", final_pred)
+    # print("\n---- original list ----")
+    # print(sample_list)
+    # print(pred)
+
+    # print("\n---- Result ----")
+    # print(new_interval_lst)
+    # print(new_pred_lst)
+
+    # ########### Merge prediction_lst ###########
+    # print("\nMerging final prediction list ...")
+    merged_interval_lst = []
+    merged_class_lst = []
+    start_class = -1
+    for idx in range(len(new_interval_lst)):
+        if new_pred_lst[idx] != start_class:
+            merged_interval_lst.append(new_interval_lst[idx])
+            merged_class_lst.append(new_pred_lst[idx])
+            start_class = new_pred_lst[idx]
+        else:
+            merged_interval_lst[-1] = (merged_interval_lst[-1][0], new_interval_lst[idx][1])
+    # print("\n---- Merged Result ----")
+    # print("Final merged interval list:", merged_interval_lst)
+    # print("Final prediction list: ",merged_class_lst)
+
+    merged_dict = {}
+    for idx in range(len(merged_interval_lst)):
+        merged_dict[merged_interval_lst[idx]] = merged_class_lst[idx]
+    return merged_dict
 
 
 def main_worker(cfg):
@@ -82,21 +192,27 @@ def main_worker(cfg):
 
     # create model
     model = get_model(cfg)
-    #print(model)
+    # print(model)
     model = deploy_model(model, cfg)
 
     if cfg.CONFIG.MODEL.LOAD:
         model, _ = load_model(model, cfg)
         sample_list = split_video(args.video_path, clip_len=args.clip_length, interval=args.interval)
-        pred = classify_video(model, args.video_path, sample_list, sample_rate_scale=args.sample_rate)
+        pred, pred_prob = classify_video(model, args.video_path, sample_list, sample_rate_scale=args.sample_rate)
         print('predicted class:')
         print(pred)
         result_file = open('result.txt', 'w')
-        for sample, p in zip(sample_list, pred):
+        for sample, p, pp in zip(sample_list, pred, pred_prob):
             start, finish = sample
-            line = str(start) + ' ' + str(finish) + ' ' + str(p) + '\n'
+            line = str(start) + ' ' + str(finish) + ' ' + str(p)\
+                    + ' ' + str(pp[0]) + ' ' + str(pp[1]) + ' ' + str(pp[2]) + \
+                   ' ' + str(pp[3]) + ' ' + str(pp[4]) + '\n'
             result_file.write(line)
         result_file.close()
+
+        merged_frame_dict = merge_class(sample_list, pred, pred_prob)
+        print("\n------- Merged class -------")
+        print(merged_frame_dict)
 
 
 if __name__ == '__main__':

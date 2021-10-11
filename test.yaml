@@ -52,7 +52,7 @@ CONFIG:
     NAME: 'r2plus1d_v1_resnet50_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/1009.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/r2+1d_1011_fix.pth'
     #/home/yi/Desktop/AFL/weights/r2plus1d_0425.pth
   LOG:
     BASE_PATH: './logs/r2plus1d_v1_resnet50_custom'

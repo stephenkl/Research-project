@@ -1,4 +1,4 @@
-# r2plus1d_v1_resnet50_custom
+# i3d_slow_resnet50_f32s2_custom
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -6,7 +6,7 @@ DDP_CONFIG:
   GPU_WORLD_SIZE: 1
   GPU_WORLD_RANK: 0
   DIST_URL: 'tcp://192.168.0.221:23456'
-  WOLRD_URLS: ['192.168.0.221']
+  WOLRD_URLS: [ '192.168.0.221' ]
   AUTO_RANK_MATCH: True
   DIST_BACKEND: 'nccl'
   GPU: 0
@@ -14,20 +14,20 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 20
-    BATCH_SIZE: 4
-    LR: 0.001
+    EPOCH_NUM: 50
+    BATCH_SIZE: 6
+    LR: 0.01
     MOMENTUM: 0.9
     W_DECAY: 1e-5
     USE_WARMUP: False
-    WARMUP_EPOCHS: 34
+    WARMUP_EPOCHS: 3
     LR_POLICY: 'Cosine'
     WARMUP_END_LR: 0.1
     RESUME_EPOCH: -1
 
   VAL:
     FREQ: 2
-    BATCH_SIZE: 4
+    BATCH_SIZE: 2
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_equal/train_fix_5_cls.txt'
@@ -43,18 +43,14 @@ CONFIG:
     TEST_NUM_CROP: 3
     MULTIGRID: False
     KEEP_ASPECT_RATIO: False
-    CROP_SIZE: 112
-    SHORT_SIDE_SIZE: 128
-    NEW_HEIGHT: 128
-    NEW_WIDTH: 171
 
   MODEL:
-    NAME: 'r2plus1d_v1_resnet50_custom'
+    NAME: 'i3d_slow_resnet50_f32s2_custom'
     PRETRAINED: True
 
   LOG:
-    BASE_PATH: './logs/r2plus1d_v1_resnet50_custom'
+    BASE_PATH: './logs/i3d_slow_resnet50_f32s2_custom'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/r2plus1d_v1_resnet50_custom/eval'
-    SAVE_FREQ: 5
+    EVAL_DIR: './logs/i3d_slow_resnet50_f32s2_custom/eval'
+    SAVE_FREQ: 60
