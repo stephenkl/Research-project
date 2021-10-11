@@ -79,12 +79,13 @@ def main_worker(cfg):
                 save_model(model, optimizer, epoch, cfg)
     if writer is not None:
         writer.close()
-        torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict()}, '/home/yi/Desktop/AFL/weights/a.pth')
+        torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict()}, '/home/yi/Desktop/AFL/weights/'+args.weight_name+'.pth')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train video action recognition models.')
     parser.add_argument('--config-file', type=str, help='path to config file.')
+    parser.add_argument('--weight-name', type=str, help='name of weight file.')
     args = parser.parse_args()
 
     cfg = get_cfg_defaults()
