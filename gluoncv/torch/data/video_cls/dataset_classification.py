@@ -91,6 +91,8 @@ class VideoClsDataset(Dataset):
                 video_transforms.Resize(size=(short_side_size), interpolation='bilinear')
             ])
             self.data_transform = video_transforms.Compose([
+                video_transforms.RandomCrop(size=(int(self.crop_size),
+                                                  int(self.crop_size))),
                 volume_transforms.ClipToTensor(),
                 video_transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                            std=[0.229, 0.224, 0.225])
@@ -147,30 +149,30 @@ class VideoClsDataset(Dataset):
             chunk_nb, split_nb = self.test_seg[index]
             buffer = self.loadvideo_decord(sample)
 
-            while len(buffer) == 0:
-                warnings.warn("video {}, temporal {}, spatial {} not found during testing".format(\
-                    str(self.test_dataset[index]), chunk_nb, split_nb))
-                index = np.random.randint(self.__len__())
-                sample = self.test_dataset[index]
-                chunk_nb, split_nb = self.test_seg[index]
-                buffer = self.loadvideo_decord(sample)
-
+            # while len(buffer) == 0:
+            #     warnings.warn("video {}, temporal {}, spatial {} not found during testing".format(\
+            #         str(self.test_dataset[index]), chunk_nb, split_nb))
+            #     index = np.random.randint(self.__len__())
+            #     sample = self.test_dataset[index]
+            #     chunk_nb, split_nb = self.test_seg[index]
+            #     buffer = self.loadvideo_decord(sample)
+            #
             buffer = self.data_resize(buffer)
-            if isinstance(buffer, list):
-                buffer = np.stack(buffer, 0)
-
-            spatial_step = 1.0 * (max(buffer.shape[1], buffer.shape[2]) - self.short_side_size) \
-                                 / (self.test_num_crop - 1)
-            temporal_step = max(1.0 * (buffer.shape[0] - self.clip_len) \
-                                / (self.test_num_segment - 1), 0)
-            temporal_start = int(chunk_nb * temporal_step)
-            spatial_start = int(split_nb * spatial_step)
-            if buffer.shape[1] >= buffer.shape[2]:
-                buffer = buffer[temporal_start:temporal_start + self.clip_len, \
-                       spatial_start:spatial_start + self.short_side_size, :, :]
-            else:
-                buffer = buffer[temporal_start:temporal_start + self.clip_len, \
-                       :, spatial_start:spatial_start + self.short_side_size, :]
+            # if isinstance(buffer, list):
+            #     buffer = np.stack(buffer, 0)
+            #
+            # spatial_step = 1.0 * (max(buffer.shape[1], buffer.shape[2]) - self.short_side_size) \
+            #                      / (self.test_num_crop - 1)
+            # temporal_step = max(1.0 * (buffer.shape[0] - self.clip_len) \
+            #                     / (self.test_num_segment - 1), 0)
+            # temporal_start = int(chunk_nb * temporal_step)
+            # spatial_start = int(split_nb * spatial_step)
+            # if buffer.shape[1] >= buffer.shape[2]:
+            #     buffer = buffer[temporal_start:temporal_start + self.clip_len, \
+            #            spatial_start:spatial_start + self.short_side_size, :, :]
+            # else:
+            #     buffer = buffer[temporal_start:temporal_start + self.clip_len, \
+            #            :, spatial_start:spatial_start + self.short_side_size, :]
 
             buffer = self.data_transform(buffer)
             return buffer, self.test_label_array[index], sample.split("/")[-1].split(".")[0], \
@@ -200,16 +202,22 @@ class VideoClsDataset(Dataset):
             print("video cannot be loaded by decord: ", fname)
             return []
 
-        if self.mode == 'test':
-            all_index = [x for x in range(0, len(vr), self.frame_sample_rate)]
-            while len(all_index) < self.clip_len:
-                all_index.append(all_index[-1])
-            vr.seek(0)
-            buffer = vr.get_batch(all_index).asnumpy()
-            return buffer
+        # if self.mode == 'test':
+        #     all_index = [x for x in range(0, len(vr), 1)]#self.frame_sample_rate
+        #     while len(all_index) < self.clip_len:
+        #         all_index.append(all_index[-1])
+        #     vr.seek(0)
+        #     buffer = vr.get_batch(all_index).asnumpy()
+        #     return buffer
+        # if self.mode == 'test':
+        #     index = random.sample(range(0,len(vr)), 16)
+        #     #print(sorted(index))
+        #     vr.seek(0)
+        #     buffer = vr.get_batch(sorted(index)).asnumpy()
+        #     return buffer
         # handle temporal segments
         converted_len = int(self.clip_len * self.frame_sample_rate)
-        seg_len = len(vr) // self.num_segment
+        seg_len = len(vr) #// self.num_segment
 
         all_index = []
         for i in range(self.num_segment):
@@ -294,6 +302,7 @@ class VideoClsDataset(Dataset):
             # print(len(all_index))
             # print(seg_len)
         # print(all_index)
+        # print(len(all_index))
         buffer = vr.get_batch(all_index).asnumpy()
         return buffer
 

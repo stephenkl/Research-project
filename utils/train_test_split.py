@@ -3,10 +3,10 @@ import numpy as np
 from collections import defaultdict
 
 
-path = '/home/yi/Desktop/AFL/dataset_equal/'
-num_cls = 'fix_5'
+path = '/home/yi/Desktop/AFL/dataset_final/'
+num_cls = '4'
 
-with open(path+'all.txt', 'r') as f:
+with open(path+'all_4cls.txt', 'r') as f:
     lines = f.readlines()
 
 dl = defaultdict(list)

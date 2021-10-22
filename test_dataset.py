@@ -1,5 +1,7 @@
 import os
 import argparse
+import sys
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -25,7 +27,7 @@ def loadvideo_test(sample, sample_rate_scale=1):
     """Load video content using Decord"""
     # pylint: disable=line-too-long, bare-except, unnecessary-comprehension
     data_resize = video_transforms.Compose([
-        video_transforms.Resize(size=128, interpolation='bilinear')
+        video_transforms.Resize(size=(112,112), interpolation='bilinear')#resize depend on model
     ])
     data_transform = video_transforms.Compose([
         volume_transforms.ClipToTensor(),
@@ -35,11 +37,13 @@ def loadvideo_test(sample, sample_rate_scale=1):
     fname = sample
     vr = VideoReader(fname, num_threads=1, ctx=cpu(0))
     all_index = [x for x in range(0, len(vr), sample_rate_scale)]
+
     #vr.seek(0)
     buffer = vr.get_batch(all_index).asnumpy()
     buffer = data_resize(buffer)
     #buffer = np.stack(buffer, 0)
     buffer = data_transform(buffer)
+
     return buffer
 
 
@@ -58,7 +62,7 @@ def main_worker(cfg):
     model = deploy_model(model, cfg)
 
     if cfg.CONFIG.MODEL.LOAD:
-        model, _ = load_model(model, cfg)
+        model, _ = load_model(model, cfg, load_fc=True)
 
     with open(os.path.join(args.dataset_path, args.txt_file), 'r') as f:
         lines = f.readlines()
@@ -71,12 +75,15 @@ def main_worker(cfg):
         cls_list.append(int(cls))
     pred_list = []
     pred_cls_list = []
+
     for fname in video_list:
         vid = loadvideo_test(os.path.join(args.dataset_path, fname))
+        print(sys.getsizeof(vid))
         with torch.no_grad():
             vid = vid.cuda()
             pred = model(torch.unsqueeze(vid, dim=0))
             pred = pred.detach().cpu().numpy()
+            print(pred)
             print(fname, np.argmax(pred))
             pred_list.append(pred)
             pred_cls_list.append(np.argmax(pred))

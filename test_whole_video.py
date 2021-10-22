@@ -42,7 +42,7 @@ def classify_video(model, fname, sample_list, sample_rate_scale=1):
     """Load video content using Decord"""
 
     data_resize = video_transforms.Compose([
-        video_transforms.Resize(size=128, interpolation='bilinear')
+        video_transforms.Resize(size=(112,112), interpolation='bilinear')
     ])
     data_transform = video_transforms.Compose([
         volume_transforms.ClipToTensor(),
@@ -57,13 +57,14 @@ def classify_video(model, fname, sample_list, sample_rate_scale=1):
     for sample in sample_list:
         all_index = [x for x in range(sample[0], sample[1], sample_rate_scale)]
         # vr.seek(0)
+        # print(all_index)
         buffer = vr.get_batch(all_index).asnumpy()
         buffer = data_resize(buffer)
         # buffer = np.stack(buffer, 0)
         buffer = data_transform(buffer)
         with torch.no_grad():
             buffer = buffer.cuda()
-            pred = model(torch.unsqueeze(buffer, dim=0))
+            pred = model(torch.unsqueeze(buffer, dim=0))#
             pred = pred.detach().cpu().numpy()
             pred_prob.append(pred[0])
             # print(pred)
@@ -205,14 +206,14 @@ def main_worker(cfg):
         for sample, p, pp in zip(sample_list, pred, pred_prob):
             start, finish = sample
             line = str(start) + ' ' + str(finish) + ' ' + str(p)\
-                    + ' ' + str(pp[0]) + ' ' + str(pp[1]) + ' ' + str(pp[2]) + \
-                   ' ' + str(pp[3]) + ' ' + str(pp[4]) + '\n'
+                    + ' ' + str(pp[0]) + ' ' + str(pp[1]) + ' ' + str(pp[2]) \
+                   + ' '  + str(pp[3])+ ' ' + str(pp[4])+ '\n'
             result_file.write(line)
         result_file.close()
 
         merged_frame_dict = merge_class(sample_list, pred, pred_prob)
-        print("\n------- Merged class -------")
-        print(merged_frame_dict)
+        #print("\n------- Merged class -------")
+        #print(merged_frame_dict)
 
 
 if __name__ == '__main__':

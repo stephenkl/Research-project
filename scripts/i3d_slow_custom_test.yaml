@@ -48,7 +48,7 @@ CONFIG:
     NAME: 'i3d_slow_resnet50_f32s2_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/i3d_slow_1011_fix.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/i3d/i3d_slow_1011_fix.pth'
 
   LOG:
     BASE_PATH: './logs/i3d_slow_resnet50_f32s2_custom'

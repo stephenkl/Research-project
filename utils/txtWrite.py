@@ -1,9 +1,9 @@
 from getFrame import get_frame
 
-path = '/home/yi/Desktop/AFL/test_final/'
+path = '/home/yi/Desktop/AFL/dataset_final/'
 file = open(path+'list.txt', 'r')
 line = file.readline()
-newfile = open(path+'all.txt', 'w')
+newfile = open(path+'all_4cls.txt', 'w')
 
 kick_count = 0
 cmark_count = 0
@@ -14,6 +14,7 @@ non_count = 0
 
 while line != "":
     line = line.replace('\n', '')
+    #print(line)
     d = path + line
     frames = get_frame(d)
 
@@ -24,21 +25,22 @@ while line != "":
         cls = 1
         cmark_count+=1
     elif 'mark' in line:
-        cls = 2
+        cls = 2 #1
         mark_count+=1
     elif 'pass' in line:
-        cls = 3
+        cls = 3 #2
         pass_count+=1
-    elif 'non' in line:
-        cls = 4
-        non_count+=1
+    # elif 'non' in line:
+    #     cls = 4
+    #     non_count+=1
     else:
+        line = file.readline()
         continue
 
     newline = line + ' ' + str(frames) + ' '+str(cls) +'\n'
     newfile.write(newline)
-
     line = file.readline()
+
 file.close()
 newfile.close()
 print('kick:',kick_count)
