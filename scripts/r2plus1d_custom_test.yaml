@@ -14,7 +14,7 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 30
+    EPOCH_NUM: 20
     BATCH_SIZE: 4
     LR: 0.001
     MOMENTUM: 0.9
@@ -31,16 +31,18 @@ CONFIG:
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_equal/train_5_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_half.txt'
+    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_equal/'
+    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
     NUM_CLASSES: 5
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1
     NUM_CROP: 1
-    TEST_NUM_SEGMENT: 2
-    TEST_NUM_CROP: 2
+    TEST_NUM_SEGMENT: 1
+    TEST_NUM_CROP: 1
     MULTIGRID: False
     KEEP_ASPECT_RATIO: False
     CROP_SIZE: 112
@@ -52,7 +54,10 @@ CONFIG:
     NAME: 'r2plus1d_v1_resnet50_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/AFL/weights/r2+1d_1011_fix.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/r2+1d/v1_final_1020_5cls/checkpoints/best.pth'
+    #'/home/yi/Desktop/AFL/logs/r2+1d/v1_final_5cls_weight/checkpoints/best.pth'
+    #'/home/yi/Desktop/AFL/weights/r2plus1d/1009.pth'
+    #'/home/yi/Desktop/AFL/logs/r2+1d/select_3cls_50epoch/checkpoints/best.pth'
 
   LOG:
     BASE_PATH: './logs/r2plus1d_v1_resnet50_custom'

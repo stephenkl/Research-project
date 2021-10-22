@@ -1,4 +1,4 @@
-# i3d_slow_resnet50_f32s2_custom
+# i3d_slow_resnet50_f16s4_custom
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -14,28 +14,25 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 30
+    EPOCH_NUM: 50
     BATCH_SIZE: 4
-    LR: 0.01
+    LR: 0.001
     MOMENTUM: 0.9
     W_DECAY: 1e-5
     USE_WARMUP: False
-    WARMUP_EPOCHS: 3
+    WARMUP_EPOCHS: 5
     LR_POLICY: 'Cosine'
-    WARMUP_END_LR: 0.1
     RESUME_EPOCH: -1
 
   VAL:
-    FREQ: 2
+    FREQ: 5
     BATCH_SIZE: 4
 
   DATA:
-    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3cls_80.txt'
     VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
     NUM_CLASSES: 3
     CLIP_LEN: 16
     FRAME_RATE: 6
@@ -49,13 +46,11 @@ CONFIG:
   MODEL:
     NAME: 'i3d_slow_resnet101_f16s4_custom'
     PRETRAINED: True
-    LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/best.pth'
-    #'/home/yi/PycharmProjects/project/Research-project/logs/i3d_slow_custom/2021-10-17-08-38-11/checkpoints/best.pth'
 
   LOG:
-    BASE_PATH: './logs/i3d_slow_resnet50_f32s2_custom'
+    BASE_PATH: './logs/i3d_slow_custom'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/i3d_slow_resnet50_f32s2_custom/eval'
-    SAVE_FREQ: 50
+    EVAL_DIR: './logs/i3d_slow_custom/eval'
+    #DISPLAY_FREQ: 50
+    SAVE_FREQ: 100

@@ -1,4 +1,4 @@
-# tpn_resnet50_f32s2_custom
+# ircsn_v2_resnet152_f32s2_kinetics400
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -14,14 +14,14 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 30
+    EPOCH_NUM: 58    # finetune from a pretrained model, hence small lr
     BATCH_SIZE: 6
-    LR: 0.01
+    LR: 0.000125
+    LR_POLICY: 'Step'
     MOMENTUM: 0.9
     W_DECAY: 1e-5
-    LR_POLICY: 'Step'
     USE_WARMUP: False
-    LR_MILESTONE: [75, 125]
+    LR_MILESTONE: [32, 48]
     STEP: 0.1
 
   VAL:
@@ -30,11 +30,9 @@ CONFIG:
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3_cls.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
     NUM_CLASSES: 3
     CLIP_LEN: 16
     FRAME_RATE: 6
@@ -43,17 +41,15 @@ CONFIG:
     TEST_NUM_SEGMENT: 10
     TEST_NUM_CROP: 3
     MULTIGRID: False
-    KEEP_ASPECT_RATIO: False
+    KEEP_ASPECT_RATIO: True
 
   MODEL:
-    NAME: 'tpn_resnet101_f16s4_custom'
+    NAME: 'ircsn_v2_resnet152_f32s2_custom'
     PRETRAINED: True
-    LOAD: True
-    PRETRAINED_PATH: '/home/yi/PycharmProjects/project/Research-project/logs/tpn_custom/2021-10-17-12-00-11/checkpoints/best.pth'
 
   LOG:
-    BASE_PATH: './logs/tpn_custom'
+    BASE_PATH: './logs/ircsn_v2_resnet152_f32s2_kinetics400'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/tpn_custom'
-    SAVE_FREQ: 100
+    EVAL_DIR: './logs/ircsn_v2_resnet152_f32s2_kinetics400/eval'
+    SAVE_FREQ: 10

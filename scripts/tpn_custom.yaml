@@ -14,27 +14,25 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 30
-    BATCH_SIZE: 6
-    LR: 0.01
+    EPOCH_NUM: 50
+    BATCH_SIZE: 3
+    LR: 0.0001
     MOMENTUM: 0.9
     W_DECAY: 1e-5
     LR_POLICY: 'Step'
     USE_WARMUP: False
-    LR_MILESTONE: [75, 125]
+    LR_MILESTONE: [20, 40]
     STEP: 0.1
 
   VAL:
     FREQ: 2
-    BATCH_SIZE: 6
+    BATCH_SIZE: 3
 
   DATA:
-    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3cls_80.txt'
     VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
     NUM_CLASSES: 3
     CLIP_LEN: 16
     FRAME_RATE: 6
@@ -48,8 +46,6 @@ CONFIG:
   MODEL:
     NAME: 'tpn_resnet101_f16s4_custom'
     PRETRAINED: True
-    LOAD: True
-    PRETRAINED_PATH: '/home/yi/PycharmProjects/project/Research-project/logs/tpn_custom/2021-10-17-12-00-11/checkpoints/best.pth'
 
   LOG:
     BASE_PATH: './logs/tpn_custom'

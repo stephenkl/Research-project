@@ -5,8 +5,8 @@ DDP_CONFIG:
   WORLD_RANK: 0
   GPU_WORLD_SIZE: 1
   GPU_WORLD_RANK: 0
-  DIST_URL: 'tcp://192.168.0.108:23456'
-  WOLRD_URLS: [ '192.168.0.108' ]
+  DIST_URL: 'tcp://192.168.0.221:23456'
+  WOLRD_URLS: [ '192.168.0.221' ]
   AUTO_RANK_MATCH: True
   DIST_BACKEND: 'nccl'
   GPU: 0
@@ -21,7 +21,7 @@ CONFIG:
     W_DECAY: 1e-5
     LR_POLICY: 'Step'
     USE_WARMUP: False
-    LR_MILESTONE: [40, 80]
+    LR_MILESTONE: [10, 20]
     STEP: 0.1
 
   VAL:
@@ -29,13 +29,13 @@ CONFIG:
     BATCH_SIZE: 10
 
   DATA:
-    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset/new_train.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset/new_val.txt'
-    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset/'
-    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset/'
-    NUM_CLASSES: 3
-    CLIP_LEN: 32
-    FRAME_RATE: 3
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_5.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    NUM_CLASSES: 5
+    CLIP_LEN: 16
+    FRAME_RATE: 6
     NUM_SEGMENT: 1
     NUM_CROP: 1
     TEST_NUM_SEGMENT: 10
@@ -52,4 +52,4 @@ CONFIG:
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
     EVAL_DIR: './logs/i3d_resnet50_v1_custom/eval'
-    SAVE_FREQ: 10
+    SAVE_FREQ: 100

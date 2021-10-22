@@ -1,4 +1,4 @@
-# i3d_resnet50_v1_custom
+# i3d_nl10_resnet101_v1_kinetics400
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -6,7 +6,7 @@ DDP_CONFIG:
   GPU_WORLD_SIZE: 1
   GPU_WORLD_RANK: 0
   DIST_URL: 'tcp://192.168.0.221:23456'
-  WOLRD_URLS: [ '192.168.0.221' ]
+  WOLRD_URLS: ['192.168.0.221']
   AUTO_RANK_MATCH: True
   DIST_BACKEND: 'nccl'
   GPU: 0
@@ -14,8 +14,8 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 50
-    BATCH_SIZE: 10
+    EPOCH_NUM: 30
+    BATCH_SIZE: 12
     LR: 0.01
     MOMENTUM: 0.9
     W_DECAY: 1e-5
@@ -26,16 +26,16 @@ CONFIG:
 
   VAL:
     FREQ: 2
-    BATCH_SIZE: 8
+    BATCH_SIZE: 12
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all.txt'
+    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/test_3_cls.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
-    NUM_CLASSES: 5
+    NUM_CLASSES: 3
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1
@@ -46,15 +46,14 @@ CONFIG:
     KEEP_ASPECT_RATIO: False
 
   MODEL:
-    NAME: 'i3d_resnet50_v1_custom'
-    PRETRAINED: True    # Default True, use a backbone pretrained on K400. If set to False, the model is just inflated from 2D ImageNet weights.
-    LOAD : True
-    PRETRAINED_PATH : '/home/yi/PycharmProjects/project/Research-project/logs/i3d_resnet50_v1_custom/2021-10-22-08-41-51/checkpoints/best.pth'
-    
+    NAME: 'i3d_nl10_resnet50_v1_custom'
+    PRETRAINED: True
+    LOAD: True
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/i3d_nl/select_3cls_50epoch/checkpoints/best.pth'
 
   LOG:
-    BASE_PATH: './logs/i3d_resnet50_v1_custom/test'
+    BASE_PATH: './logs/i3d_nl10_resnet50_v1_custom'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/i3d_resnet50_v1_custom/eval'
-    SAVE_FREQ: 2
+    EVAL_DIR: './logs/i3d_nl10_resnet50_v1_custom/eval'
+    SAVE_FREQ: 50

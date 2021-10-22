@@ -1,4 +1,4 @@
-# i3d_slow_resnet50_f32s2_custom
+# slowfast_4x16_resnet50_custom
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -14,20 +14,20 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 30
-    BATCH_SIZE: 4
+    EPOCH_NUM: 20
+    BATCH_SIZE: 6
     LR: 0.01
     MOMENTUM: 0.9
     W_DECAY: 1e-5
-    USE_WARMUP: False
-    WARMUP_EPOCHS: 3
+    USE_WARMUP: False #True
+    WARMUP_EPOCHS: 5
     LR_POLICY: 'Cosine'
     WARMUP_END_LR: 0.1
     RESUME_EPOCH: -1
 
   VAL:
     FREQ: 2
-    BATCH_SIZE: 4
+    BATCH_SIZE: 6
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
@@ -47,15 +47,14 @@ CONFIG:
     KEEP_ASPECT_RATIO: False
 
   MODEL:
-    NAME: 'i3d_slow_resnet101_f16s4_custom'
+    NAME: 'slowfast_8x8_resnet101_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/best.pth'
-    #'/home/yi/PycharmProjects/project/Research-project/logs/i3d_slow_custom/2021-10-17-08-38-11/checkpoints/best.pth'
+    PRETRAINED_PATH: '/home/yi/PycharmProjects/project/Research-project/logs/slowfast_custom/2021-10-17-12-45-23/checkpoints/best.pth'
 
   LOG:
-    BASE_PATH: './logs/i3d_slow_resnet50_f32s2_custom'
+    BASE_PATH: './logs/slowfast_custom'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/i3d_slow_resnet50_f32s2_custom/eval'
-    SAVE_FREQ: 50
+    EVAL_DIR: './logs/slowfast_custom/eval'
+    SAVE_FREQ: 100

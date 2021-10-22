@@ -1,4 +1,4 @@
-# r2plus1d_v1_resnet50_custom
+# i3d_nl10_resnet101_v1_kinetics400
 
 DDP_CONFIG:
   WORLD_SIZE: 1
@@ -15,19 +15,20 @@ DDP_CONFIG:
 CONFIG:
   TRAIN:
     EPOCH_NUM: 30
-    BATCH_SIZE: 4
-    LR: 0.0001
+    BATCH_SIZE: 8
+    LR: 0.001
     MOMENTUM: 0.9
-    W_DECAY: 1e-6
+    W_DECAY: 1e-5
+    LR_POLICY: 'Step'
     USE_WARMUP: False
-    WARMUP_EPOCHS: 34
-    LR_POLICY: 'Cosine'
-    WARMUP_END_LR: 0.1
+    WARMUP_EPOCHS: 3
     RESUME_EPOCH: -1
+    LR_MILESTONE: [10, 20]
+    STEP: 0.1
 
   VAL:
     FREQ: 2
-    BATCH_SIZE: 4
+    BATCH_SIZE: 8
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_5.txt'
@@ -43,18 +44,14 @@ CONFIG:
     TEST_NUM_CROP: 3
     MULTIGRID: False
     KEEP_ASPECT_RATIO: False
-    CROP_SIZE: 112
-    SHORT_SIDE_SIZE: 128
-    NEW_HEIGHT: 128
-    NEW_WIDTH: 171
 
   MODEL:
-    NAME: 'r2plus1d_v2_resnet152_custom'
+    NAME: 'i3d_nl10_resnet101_v1_custom'
     PRETRAINED: True
 
   LOG:
-    BASE_PATH: './logs/r2plus1d_custom'
+    BASE_PATH: './logs/i3d_nl10_resnet50_v1_custom'
     LOG_DIR: 'tb_log'
     SAVE_DIR: 'checkpoints'
-    EVAL_DIR: './logs/r2plus1d_custom/eval'
+    EVAL_DIR: './logs/i3d_nl10_resnet50_v1_custom/eval'
     SAVE_FREQ: 50

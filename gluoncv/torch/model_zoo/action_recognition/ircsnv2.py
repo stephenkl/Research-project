@@ -215,11 +215,11 @@ def ircsn_v2_resnet152_f32s2_custom(cfg):
         state_dict = torch.load(get_model_file('ircsn_v2_resnet152_f32s2_kinetics400', tag=cfg.CONFIG.MODEL.PRETRAINED))
         for k in list(state_dict.keys()):
             # retain only backbone up to before the classification layer
-            if k.startswith('fc'):
+            if k.startswith('out_fc'):
                 del state_dict[k]
 
         msg = model.load_state_dict(state_dict, strict=False)
-        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias'}
+        assert set(msg.missing_keys) == {'out_fc.weight', 'out_fc.bias'}
         print("=> Initialized from a IRCSN model pretrained on Kinetcis400 dataset")
 
     return model
