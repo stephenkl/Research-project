@@ -41,8 +41,8 @@ CONFIG:
     FRAME_RATE: 6
     NUM_SEGMENT: 1
     NUM_CROP: 1
-    TEST_NUM_SEGMENT: 1
-    TEST_NUM_CROP: 1
+    TEST_NUM_SEGMENT: 10
+    TEST_NUM_CROP: 3
     MULTIGRID: False
     KEEP_ASPECT_RATIO: False
     CROP_SIZE: 112
@@ -51,10 +51,10 @@ CONFIG:
     NEW_WIDTH: 171
 
   MODEL:
-    NAME: 'r2plus1d_v1_resnet50_custom'
+    NAME: 'r2plus1d_v2_resnet152_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/r2+1d/v1_final_1020_5cls/checkpoints/best.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/r2+1d/v2_final_5cls_nw/checkpoints/best.pth'
     #'/home/yi/Desktop/AFL/logs/r2+1d/v1_final_5cls_weight/checkpoints/best.pth'
     #'/home/yi/Desktop/AFL/weights/r2plus1d/1009.pth'
     #'/home/yi/Desktop/AFL/logs/r2+1d/select_3cls_50epoch/checkpoints/best.pth'

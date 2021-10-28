@@ -21,7 +21,7 @@ CONFIG:
     W_DECAY: 1e-5
     LR_POLICY: 'Step'
     USE_WARMUP: False
-    LR_MILESTONE: [75, 125]
+    LR_MILESTONE: [10, 20]
     STEP: 0.1
 
   VAL:
@@ -30,12 +30,12 @@ CONFIG:
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
+    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
-    NUM_CLASSES: 3
+    #VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
+    NUM_CLASSES: 5
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1
@@ -49,7 +49,7 @@ CONFIG:
     NAME: 'tpn_resnet101_f16s4_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/PycharmProjects/project/Research-project/logs/tpn_custom/2021-10-17-12-00-11/checkpoints/best.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/tpn/final_5cls/checkpoints/best.pth'
 
   LOG:
     BASE_PATH: './logs/tpn_custom'

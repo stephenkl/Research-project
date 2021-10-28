@@ -30,11 +30,11 @@ CONFIG:
     BATCH_SIZE: 4
 
   DATA:
-    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_5.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_4.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_4.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
     VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
-    NUM_CLASSES: 5
+    NUM_CLASSES: 4
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1

@@ -14,14 +14,14 @@ DDP_CONFIG:
 
 CONFIG:
   TRAIN:
-    EPOCH_NUM: 58    # finetune from a pretrained model, hence small lr
+    EPOCH_NUM: 30    # finetune from a pretrained model, hence small lr
     BATCH_SIZE: 6
     LR: 0.000125
     LR_POLICY: 'Step'
     MOMENTUM: 0.9
     W_DECAY: 1e-5
     USE_WARMUP: False
-    LR_MILESTONE: [32, 48]
+    LR_MILESTONE: [10, 20]
     STEP: 0.1
 
   VAL:
@@ -29,11 +29,11 @@ CONFIG:
     BATCH_SIZE: 6
 
   DATA:
-    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3_cls.txt'
-    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    NUM_CLASSES: 3
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_5.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    NUM_CLASSES: 5
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1

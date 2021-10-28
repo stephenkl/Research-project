@@ -31,12 +31,12 @@ CONFIG:
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
     #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
-    NUM_CLASSES: 3
+    NUM_CLASSES: 5
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1
@@ -50,7 +50,7 @@ CONFIG:
     NAME: 'i3d_slow_resnet101_f16s4_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/Desktop/best.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/i3d_slow/final_resnet101_5cls/checkpoints/best.pth'
     #'/home/yi/PycharmProjects/project/Research-project/logs/i3d_slow_custom/2021-10-17-08-38-11/checkpoints/best.pth'
 
   LOG:

@@ -31,12 +31,12 @@ CONFIG:
 
   DATA:
     TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/train_3_cls.txt'
-    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_select/val_3cls_20.txt'
-    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all_3_mark_merged.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    #VAL_ANNO_PATH: '/home/yi/Desktop/AFL/test_final/all.txt'
     TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
-    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_select/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
     #VAL_DATA_PATH: '/home/yi/Desktop/AFL/test_final/'
-    NUM_CLASSES: 3
+    NUM_CLASSES: 5
     CLIP_LEN: 16
     FRAME_RATE: 6
     NUM_SEGMENT: 1
@@ -50,7 +50,7 @@ CONFIG:
     NAME: 'slowfast_8x8_resnet101_custom'
     PRETRAINED: True
     LOAD: True
-    PRETRAINED_PATH: '/home/yi/PycharmProjects/project/Research-project/logs/slowfast_custom/2021-10-17-12-45-23/checkpoints/best.pth'
+    PRETRAINED_PATH: '/home/yi/Desktop/AFL/logs/slow_fast/final_5cls/checkpoints/last.pth'
 
   LOG:
     BASE_PATH: './logs/slowfast_custom'
