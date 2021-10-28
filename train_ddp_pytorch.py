@@ -89,7 +89,7 @@ def main_worker(cfg):
             val_loss = validation_classification(model, val_loader, epoch, criterion, cfg, writer)
             if val_loss < min_loss:
                 #print('before save', val_loss)
-                if epoch >= 5:
+                if epoch >= 10:
                     save_model(model, optimizer, epoch, cfg)
                 if min_loss - val_loss >= 0.01:
                     min_cycle = 0
@@ -99,9 +99,9 @@ def main_worker(cfg):
             else:
                 min_cycle += 1
 
-        if min_cycle >= 5:
-            print('Early stopped at:', epoch+1)
-            break
+        # if min_cycle >= 5:
+        #     print('Early stopped at:', epoch+1)
+        #     break
         # if epoch % cfg.CONFIG.LOG.SAVE_FREQ == 0:
         #     if cfg.DDP_CONFIG.GPU_WORLD_RANK == 0 or cfg.DDP_CONFIG.DISTRIBUTED == False:
         #         save_model(model, optimizer, epoch, cfg)

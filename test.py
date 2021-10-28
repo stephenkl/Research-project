@@ -1,5 +1,7 @@
 import os
 import argparse
+import random
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -19,11 +21,12 @@ from gluoncv.torch.data.transforms.videotransforms import video_transforms, volu
 # local ip, hostname -I
 
 
-def loadvideo_test(sample, sample_rate_scale=1):
+def loadvideo_test(sample, sample_rate_scale=3):
     """Load video content using Decord"""
     # pylint: disable=line-too-long, bare-except, unnecessary-comprehension
     data_resize = video_transforms.Compose([
-        video_transforms.Resize(size=128, interpolation='bilinear')
+        video_transforms.Resize(size=256, interpolation='bilinear'),
+        video_transforms.CenterCrop(size=(224, 224))
     ])
     data_transform = video_transforms.Compose([
         volume_transforms.ClipToTensor(),
@@ -49,17 +52,19 @@ def main_worker(cfg):
     else:
         writer = None
     cfg.freeze()
-
+    print(cfg)
     # create model
     model = get_model(cfg)
-    #print(model)
+    print(model)
     model = deploy_model(model, cfg)
-
+    pytorch_total_params = sum(p.numel() for p in model.parameters())
+    print(pytorch_total_params)
     if cfg.CONFIG.MODEL.LOAD:
         model, _ = load_model(model, cfg)
     #'/home/yi/Desktop/AFL/dataset/cmark_30.mp4'
     #/home/yi/PycharmProjects/pythonProject/abseiling_k400.mp4
     vid = loadvideo_test(args.video_path)
+    print(vid.shape)
     with torch.no_grad():
         vid = vid.cuda()
         pred = model(torch.unsqueeze(vid, dim=0))
