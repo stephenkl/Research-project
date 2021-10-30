@@ -77,6 +77,6 @@ def read_txt(path):
 
 
 # useful commands
-# vid = read_vid('D:/Project/AFL/video/8.mp4')
+# vid = read_vid('/home/yi/Desktop/AFL/demo_1.mp4')
 # show_vid(vid)
 # read_txt('D:/Project/AFL/video/7.txt')
