@@ -1,0 +1,56 @@
+# slowfast_4x16_resnet50_custom
+
+DDP_CONFIG:
+  WORLD_SIZE: 1
+  WORLD_RANK: 0
+  GPU_WORLD_SIZE: 1
+  GPU_WORLD_RANK: 0
+  DIST_URL: 'tcp://192.168.0.221:23456'
+  WOLRD_URLS: [ '192.168.0.221' ]
+  AUTO_RANK_MATCH: True
+  DIST_BACKEND: 'nccl'
+  GPU: 0
+  DISTRIBUTED: False
+
+CONFIG:
+  TRAIN:
+    EPOCH_NUM: 30
+    BATCH_SIZE: 6
+    LR: 0.001
+    MOMENTUM: 0.9
+    W_DECAY: 1e-5
+    USE_WARMUP: False #True
+    WARMUP_EPOCHS: 5
+    LR_POLICY: 'Cosine'
+    WARMUP_END_LR: 0.1
+    RESUME_EPOCH: -1
+
+  VAL:
+    FREQ: 2
+    BATCH_SIZE: 6
+
+  DATA:
+    TRAIN_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/train_5.txt'
+    VAL_ANNO_PATH: '/home/yi/Desktop/AFL/dataset_final/val_5.txt'
+    TRAIN_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    VAL_DATA_PATH: '/home/yi/Desktop/AFL/dataset_final/'
+    NUM_CLASSES: 5
+    CLIP_LEN: 16
+    FRAME_RATE: 6
+    NUM_SEGMENT: 1
+    NUM_CROP: 1
+    TEST_NUM_SEGMENT: 10
+    TEST_NUM_CROP: 3
+    MULTIGRID: False
+    KEEP_ASPECT_RATIO: False
+
+  MODEL:
+    NAME: 'slowfast_8x8_resnet101_custom'
+    PRETRAINED: True
+
+  LOG:
+    BASE_PATH: './logs/slowfast_custom'
+    LOG_DIR: 'tb_log'
+    SAVE_DIR: 'checkpoints'
+    EVAL_DIR: './logs/slowfast_custom/eval'
+    SAVE_FREQ: 100

@@ -14,7 +14,8 @@ from .non_local import build_nonlocal_block
 __all__ = ['I3D_ResNetV1', 'i3d_resnet50_v1_kinetics400', 'i3d_resnet101_v1_kinetics400',
            'i3d_nl5_resnet50_v1_kinetics400', 'i3d_nl10_resnet50_v1_kinetics400',
            'i3d_nl5_resnet101_v1_kinetics400', 'i3d_nl10_resnet101_v1_kinetics400',
-           'i3d_resnet50_v1_sthsthv2', 'i3d_resnet50_v1_custom']
+           'i3d_resnet50_v1_sthsthv2', 'i3d_resnet50_v1_custom',
+           'i3d_nl10_resnet50_v1_custom', 'i3d_nl10_resnet101_v1_custom']
 
 
 def conv3x3x3(in_planes, out_planes, spatial_stride=1, temporal_stride=1, dilation=1):
@@ -711,4 +712,74 @@ def i3d_resnet50_v1_custom(cfg):
         msg = model.load_state_dict(state_dict, strict=False)
         assert set(msg.missing_keys) == {'fc.weight', 'fc.bias', 'head.1.weight', 'head.1.bias'}
         print("=> Initialized from an I3D model pretrained on Kinetcis400 dataset")
+    return model
+
+
+def i3d_nl10_resnet50_v1_custom(cfg):
+    model = I3D_ResNetV1(num_classes=cfg.CONFIG.DATA.NUM_CLASSES,
+                         depth=50,
+                         pretrained=cfg.CONFIG.MODEL.PRETRAINED,
+                         pretrained_base=cfg.CONFIG.MODEL.PRETRAINED_BASE,
+                         feat_ext=cfg.CONFIG.INFERENCE.FEAT,
+                         num_segment=cfg.CONFIG.DATA.NUM_SEGMENT,
+                         num_crop=cfg.CONFIG.DATA.NUM_CROP,
+                         out_indices=[3],
+                         inflate_freq=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
+                         bn_eval=cfg.CONFIG.MODEL.BN_EVAL,
+                         partial_bn=cfg.CONFIG.MODEL.PARTIAL_BN,
+                         bn_frozen=cfg.CONFIG.MODEL.BN_FROZEN,
+                         nonlocal_stages=(1, 2),
+                         nonlocal_cfg=dict(nonlocal_type="gaussian"),
+                         nonlocal_freq=((0, 0, 0), (1, 1, 1, 1), (1, 1, 1, 1, 1, 1), (0, 0, 0)))
+
+    if cfg.CONFIG.MODEL.PRETRAINED:
+        from ..model_store import get_model_file
+        state_dict = torch.load(get_model_file('i3d_nl10_resnet50_v1_kinetics400', tag=cfg.CONFIG.MODEL.PRETRAINED))
+        for k in list(state_dict.keys()):
+            # retain only backbone up to before the classification layer
+            if k.startswith('fc') or k.startswith('head'):#
+                del state_dict[k]
+
+        msg = model.load_state_dict(state_dict, strict=False)
+        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias', 'head.1.weight', 'head.1.bias'}#
+        print("=> Initialized from an I3D model pretrained on Kinetcis400 dataset")
+
+    return model
+
+
+def i3d_nl10_resnet101_v1_custom(cfg):
+    model = I3D_ResNetV1(num_classes=cfg.CONFIG.DATA.NUM_CLASSES,
+                         depth=101,
+                         pretrained=cfg.CONFIG.MODEL.PRETRAINED,
+                         pretrained_base=cfg.CONFIG.MODEL.PRETRAINED_BASE,
+                         feat_ext=cfg.CONFIG.INFERENCE.FEAT,
+                         num_segment=cfg.CONFIG.DATA.NUM_SEGMENT,
+                         num_crop=cfg.CONFIG.DATA.NUM_CROP,
+                         out_indices=[3],
+                         inflate_freq=((1, 1, 1),
+                                       (1, 0, 1, 0),
+                                       (1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1),
+                                       (0, 1, 0)),
+                         bn_eval=cfg.CONFIG.MODEL.BN_EVAL,
+                         partial_bn=cfg.CONFIG.MODEL.PARTIAL_BN,
+                         bn_frozen=cfg.CONFIG.MODEL.BN_FROZEN,
+                         nonlocal_stages=(1, 2),
+                         nonlocal_cfg=dict(nonlocal_type="gaussian"),
+                         nonlocal_freq=((0, 0, 0),
+                                        (1, 1, 1, 1),
+                                        (0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1),
+                                        (0, 0, 0)))
+
+    if cfg.CONFIG.MODEL.PRETRAINED:
+        from ..model_store import get_model_file
+        state_dict = torch.load(get_model_file('i3d_nl10_resnet101_v1_kinetics400', tag=cfg.CONFIG.MODEL.PRETRAINED))
+        for k in list(state_dict.keys()):
+            # retain only backbone up to before the classification layer
+            if k.startswith('fc') or k.startswith('head'):#
+                del state_dict[k]
+
+        msg = model.load_state_dict(state_dict, strict=False)
+        assert set(msg.missing_keys) == {'fc.weight', 'fc.bias', 'head.1.weight', 'head.1.bias'}#
+        print("=> Initialized from an I3D model pretrained on Kinetcis400 dataset")
+
     return model

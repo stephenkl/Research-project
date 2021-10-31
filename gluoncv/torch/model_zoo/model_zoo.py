@@ -57,6 +57,17 @@ _models = {
     'tpn_resnet101_f32s2_kinetics400': tpn_resnet101_f32s2_kinetics400,
     'tpn_resnet50_f32s2_custom': tpn_resnet50_f32s2_custom,
     'multimodaltransformer_coot': MultiModalTransformer,
+    'r2plus1d_v1_resnet152_custom': r2plus1d_v1_resnet152_custom,
+    'r2plus1d_v2_resnet152_custom': r2plus1d_v2_resnet152_custom,
+    'i3d_slow_resnet50_f16s4_custom': i3d_slow_resnet50_f16s4_custom,
+    'tpn_resnet101_f16s4_custom': tpn_resnet101_f16s4_custom,
+    'slowfast_8x8_resnet101_custom': slowfast_8x8_resnet101_custom,
+    'ircsn_v2_resnet152_f32s2_custom': ircsn_v2_resnet152_f32s2_custom,
+    'i3d_nl10_resnet50_v1_custom': i3d_nl10_resnet50_v1_custom,
+    'tpn_resnet50_f16s4_custom': tpn_resnet50_f16s4_custom,
+    'i3d_nl10_resnet101_v1_custom': i3d_nl10_resnet101_v1_custom,
+    'i3d_slow_resnet101_f16s4_custom': i3d_slow_resnet101_f16s4_custom,
+    'slowfast_16x8_resnet101_custom': slowfast_16x8_resnet101_custom,
 }
 
 

@@ -74,7 +74,8 @@ def save_model(model, optimizer, epoch, cfg):
                                   cfg.CONFIG.LOG.SAVE_DIR)
     if not os.path.exists(model_save_dir):
         os.makedirs(model_save_dir)
-    ckpt_name = "f{}_s{}_ckpt_epoch{}.pth".format(cfg.CONFIG.DATA.CLIP_LEN, cfg.CONFIG.DATA.FRAME_RATE, epoch)
+    #ckpt_name = "f{}_s{}_ckpt_epoch{}.pth".format(cfg.CONFIG.DATA.CLIP_LEN, cfg.CONFIG.DATA.FRAME_RATE, epoch)
+    ckpt_name = 'best.pth'
     checkpoint = os.path.join(model_save_dir, ckpt_name)
     save_checkpoint({
         'epoch': epoch + 1,
